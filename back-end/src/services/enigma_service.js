@@ -5,12 +5,12 @@ export const checkFinalAnswer = (input) => {
     return { error: "Réponse invalide" };
 };
 
-// Réponses des 4 énigmes (indice : les premières lettres forment DIJKSTRA)
+// Réponses des 4 énigmes
 const ANSWERS = [
-    "DISTANCE",  // Enigme 1 → D
-    "INFINI",    // Enigme 2 → I
-    "JALON",     // Enigme 3 → J
-    "KRUSKAL",   // Enigme 4 → K
+    "DISTANCE",  // Enigme 1
+    "INFINI",    // Enigme 2
+    "6742",      // Enigme 3 — code final de la Matrice de Raven
+    "KRUSKAL",   // Enigme 4
 ];
 
 export const checkAnswer = (input, enigmaId) => {

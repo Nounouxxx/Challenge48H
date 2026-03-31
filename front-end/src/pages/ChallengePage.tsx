@@ -8,28 +8,43 @@ interface ChallengePageProps {
   onNavigate: (page: EnigmePage) => void;
 }
 
+const TOTAL = 12 * 60;
+const STORAGE_KEY = "challenge48h_start";
+
+function getRemainingSeconds(): number {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (!stored) {
+    localStorage.setItem(STORAGE_KEY, String(Date.now()));
+    return TOTAL;
+  }
+  const elapsed = Math.floor((Date.now() - parseInt(stored)) / 1000);
+  return Math.max(0, TOTAL - elapsed);
+}
+
 export default function ChallengePage({ onNavigate }: ChallengePageProps) {
-  const TOTAL = 12 * 60;
-  const [secondsLeft, setSecondsLeft] = useState(TOTAL);
+  const [secondsLeft, setSecondsLeft] = useState(() => getRemainingSeconds());
   const [answer, setAnswer] = useState("");
   const [placeholder, setPlaceholder] = useState("_   _   _   _   _   _   _   _");
   const [result, setResult] = useState("");
   const [isError, setIsError] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+  const [isLocked, setIsLocked] = useState(() => getRemainingSeconds() <= 0);
   const [loading, setLoading] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    if (getRemainingSeconds() <= 0) {
+      setIsLocked(true);
+      setResult("⏰ Temps écoulé !");
+      return;
+    }
     intervalRef.current = setInterval(() => {
-      setSecondsLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(intervalRef.current!);
-          setIsLocked(true);
-          setResult("⏰ Temps écoulé !");
-          return 0;
-        }
-        return prev - 1;
-      });
+      const remaining = getRemainingSeconds();
+      setSecondsLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(intervalRef.current!);
+        setIsLocked(true);
+        setResult("⏰ Temps écoulé !");
+      }
     }, 1000);
     return () => clearInterval(intervalRef.current!);
   }, []);

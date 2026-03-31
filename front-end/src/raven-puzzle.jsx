@@ -265,7 +265,7 @@ function GridCell({ cell }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function RavenPuzzle() {
+export default function RavenPuzzle({ onSolved } = {}) {
   const [step, setStep]         = useState(0);
   const [input, setInput]       = useState("");
   const [locked, setLocked]     = useState(false);
@@ -325,7 +325,12 @@ export default function RavenPuzzle() {
   };
 
   const handleCodeSubmit = () => {
-    setCodeResult(codeInput === FINAL_CODE ? "ok" : "wrong");
+    if (codeInput === FINAL_CODE) {
+      setCodeResult("ok");
+      if (onSolved) onSolved(codeInput);
+    } else {
+      setCodeResult("wrong");
+    }
   };
 
   const base = {
