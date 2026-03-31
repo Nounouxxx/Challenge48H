@@ -5,18 +5,23 @@ import RavenPuzzle from "../raven-puzzle.jsx";
 
 interface EnigmeProps {
   onBack: () => void;
+  isCompleted?: boolean;
+  onComplete?: () => void;
 }
 
-export default function Enigme3({ onBack }: EnigmeProps) {
+export default function Enigme3({ onBack, isCompleted = false, onComplete }: EnigmeProps) {
   const [apiResult, setApiResult] = useState<string | null>(null);
   const [solved, setSolved] = useState(false);
 
   const handleSolved = async (code: string) => {
+    if (isCompleted) return;
+    
     try {
       const data = await checkEnigmaAnswer(3, code);
       if (data.success) {
         setApiResult(`✅ ${data.success}`);
         setSolved(true);
+        onComplete?.();
       } else {
         setApiResult(`❌ ${data.error ?? "Code invalide"}`);
       }
@@ -39,7 +44,19 @@ export default function Enigme3({ onBack }: EnigmeProps) {
         ← Retour
       </button>
 
-      <RavenPuzzle onSolved={handleSolved} />
+      {isCompleted && (
+        <div style={{
+          position: "fixed", top: "50%", left: "50%", transform: "translate(-50%, -50%)",
+          background: "#001a14", border: "2px solid #00C9A7", borderRadius: 12,
+          padding: 32, fontFamily: "monospace",
+          color: "#00C9A7", fontSize: "1.2rem", zIndex: 999,
+          textAlign: "center",
+        }}>
+          ✅ Enigme déjà complétée !
+        </div>
+      )}
+
+      <RavenPuzzle onSolved={isCompleted ? undefined : handleSolved} disabled={isCompleted} />
 
       {apiResult && (
         <div style={{

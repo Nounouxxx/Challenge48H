@@ -1,4 +1,11 @@
 import { useState, useRef, useEffect } from "react";
+import Graph0 from "./img/Graph_0.jpg";
+import Graph1 from "./img/Graph_1.jpg";
+import Graph2 from "./img/Graph_2.jpg";
+import Graph3 from "./img/Graph_3.jpg";
+import Graph4 from "./img/Graph_4.jpg";
+
+const GRAPH_IMAGES = [Graph0, Graph1, Graph2, Graph3, Graph4];
 
 const COLORS = { green: "#00C9A7", dark: "#888", pink: "#FF6B9D" };
 
@@ -115,7 +122,7 @@ function EdgeLine({ x1, y1, x2, y2, color, weight, bidir, highlight, selected, o
 
 let _nid = 100;
 
-export default function App() {
+export default function Dijkstra({ completedCount = 0, onBack } = {}) {
   const [nodes, setNodes] = useState(initNodes);
   const [edges, setEdges] = useState(initEdges);
   const [mode, setMode] = useState("move");
@@ -301,14 +308,47 @@ export default function App() {
 
   return (
     <div style={{ background: "#0a0a0f", minHeight: "100vh", color: "#e0e0e0", fontFamily: "'JetBrains Mono','Fira Code',monospace" }}>
-      {/* Toolbar */}
-      <div style={{ padding: "10px 16px", borderBottom: "1px solid #1a1a2e", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", background: "#0d0d14" }}>
-        <span style={{ fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#00C9A7,#FF6B9D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginRight: 4 }}>DIJKSTRA</span>
-        <div style={{ width: 1, height: 20, background: "#222" }} />
-        {modes.map(({ m, icon, t }) => (
-          <button key={m} onClick={() => { setMode(m); setEdgeSrc(null); }} style={btnStyle(mode === m)}>{icon} {t}</button>
-        ))}
-      </div>
+      {/* Mode affichage simple si onBack est fourni */}
+      {onBack ? (
+        <div style={{
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          minHeight: "100vh", gap: 24, padding: "20px",
+        }}>
+          <button
+            onClick={onBack}
+            style={{
+              position: "absolute", top: 20, left: 20,
+              padding: "8px 16px", background: "transparent", border: "1px solid #00ffcc",
+              color: "#00ffcc", fontFamily: "monospace", fontSize: "0.9rem",
+              cursor: "pointer", borderRadius: 4,
+            }}
+          >
+            ← Retour
+          </button>
+
+          <img
+            src={GRAPH_IMAGES[Math.min(completedCount, 4)]}
+            alt={`Dijkstra - ${completedCount} énigmes`}
+            style={{
+              maxHeight: "90vh", maxWidth: "90vw", borderRadius: 4,
+              border: "1px solid #00ffcc", objectFit: "contain",
+            }}
+          />
+
+          <span style={{ fontSize: "1rem", color: "#00ffcc", fontFamily: "monospace" }}>
+            Énigmes complétées: {completedCount}/4
+          </span>
+        </div>
+      ) : (
+        /* Mode Dijkstra interactif */
+        <div>
+          <div style={{ padding: "10px 16px", borderBottom: "1px solid #1a1a2e", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", background: "#0d0d14" }}>
+            <span style={{ fontSize: 16, fontWeight: 800, background: "linear-gradient(135deg,#00C9A7,#FF6B9D)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginRight: 4 }}>DIJKSTRA</span>
+            <div style={{ width: 1, height: 20, background: "#222" }} />
+            {modes.map(({ m, icon, t }) => (
+              <button key={m} onClick={() => { setMode(m); setEdgeSrc(null); }} style={btnStyle(mode === m)}>{icon} {t}</button>
+            ))}
+          </div>
 
       {/* Edge creation bar */}
       {mode === "edge" && (
@@ -481,6 +521,8 @@ export default function App() {
         <span style={{ color: "#333" }}>|</span>
         <span>{nodes.length} nœuds · {edges.length} arêtes · {edges.filter(e => e.bidir).length} ⟷</span>
       </div>
+        </div>
+      )}
     </div>
   );
 }
