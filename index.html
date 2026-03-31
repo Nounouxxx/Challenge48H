@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Énigme</title>
+  
+  <!-- Lien vers le CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Cadres dans les coins -->
+<div id="corners">
+  <a href="pagesEnigmes/enigme1.html" target="_blank" class="card">1</a>
+  <a href="pagesEnigmes/enigme2.html" target="_blank" class="card">2</a>
+  <a href="pagesEnigmes/enigme3.html" target="_blank" class="card">3</a>
+  <a href="pagesEnigmes/enigme4.html" target="_blank" class="card">4</a>
+</div>
+
+<!-- Contenu principal centré -->
+<div id="main">
+  <div id="timer">1:00</div>
+
+  <input type="text" id="answer" placeholder="_   _   _   _   _   _   _   _" />
+  <button onclick="checkAnswer()">Valider</button>
+
+  <div id="result"></div>
+</div>
+
+<!-- Lien vers le JS -->
+<script src="script.js"></script>
+
+</body>
+</html>
